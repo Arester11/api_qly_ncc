@@ -1,6 +1,20 @@
 <?php
 header('Access-Control-Allow-Origin:*');
 header('Content-Type: application/json');
+header("Access-Control-Allow-Methods: GET, OPTIONS");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(array("message" => "Phương thức không được cho phép", "success" => false));
+    exit();
+}
 
 include_once('../../config/db.php');
 include_once('../../model/suppliers.php');
@@ -33,12 +47,12 @@ try {
     echo json_encode($supplier_array);
   } else {
     http_response_code(404);
-    echo json_encode(array('message' => 'No suppliers found.', 'success' => false));
+    echo json_encode(array('message' => 'Không tìm thấy nhà cung cấp nào.', 'success' => false));
   }
 } catch (Exception $e) {
   http_response_code(500);
   echo json_encode(array(
-    'message' => 'Internal Server Error',
+    'message' => 'Lỗi máy chủ nội bộ',
     'error' => $e->getMessage(),
     'success' => false
   ));

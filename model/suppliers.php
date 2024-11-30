@@ -93,4 +93,25 @@ class Suppliers
     $stmt->bindParam(':idNCC', $this->idNCC);
     return $stmt->execute();
   }
+
+  // Thêm phương thức mới vào class Suppliers
+  public function checkEmailExists($email) {
+    $query = "SELECT COUNT(*) as count FROM nhacungcap WHERE email = :email";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':email', $email);
+    
+    if ($stmt->execute()) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['count'] > 0;
+    }
+    return false;
+  }
+
+  public function validateEmail($email) {
+    // Kiểm tra định dạng email bằng filter_var
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    return true;
+  }
 } 
